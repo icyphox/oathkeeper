@@ -119,7 +119,8 @@ jobs:
     if: ${{ github.ref_type == 'tag' || github.ref_name == 'master' }}
     needs:
       - test
-      - test-hsm
+      - test-reload
+      - test-forwarded-header
       - test-e2e
       - docs-build
     steps:
@@ -133,7 +134,6 @@ jobs:
     if: ${{ github.ref_type == 'tag' }}
     needs:
       - test
-      - test-hsm
       - sdk-generate
       - docs-build
       - release
@@ -149,7 +149,8 @@ jobs:
     needs:
       - oidc-conformity
       - test
-      - test-hsm
+      - test-reload
+      - test-forwarded-header
       - test-e2e
       - changelog
       - docs-build
