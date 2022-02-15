@@ -30,7 +30,7 @@ jobs:
     needs:
       - sdk-generate
     steps:
-      - uses: ory/ci/checkout@v2
+      - uses: ory/ci/checkout@master
       - uses: actions/cache@v2
         with:
           path: |
