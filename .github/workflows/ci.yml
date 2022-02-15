@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: ory/ci/sdk/generate@master
         with:
-          token: ${{ secrets.ORY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
         id: sdk-generate
 
   validate:
@@ -30,6 +30,7 @@ jobs:
     needs:
       - sdk-generate
     steps:
+      - uses: ory/ci/checkout@v2
       - uses: actions/cache@v2
         with:
           path: |
@@ -107,7 +108,7 @@ jobs:
     steps:
       - uses: ory/ci/docs/cli-next@master
         with:
-          token: ${{ secrets.ORY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           output-dir: docs/oathkeeper/cli
 
   changelog:
@@ -120,7 +121,7 @@ jobs:
     steps:
       - uses: ory/ci/changelog@master
         with:
-          token: ${{ secrets.ORY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   sdk-release:
     name: Release SDKs
@@ -133,7 +134,7 @@ jobs:
     steps:
       - uses: ory/ci/sdk/release@master
         with:
-          token: ${{ secrets.ORY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     name: Generate release
@@ -146,7 +147,7 @@ jobs:
     steps:
       - uses: ory/ci/releaser@master
         with:
-          token: ${{ secrets.ORY_BOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           goreleaser_key: ${{ secrets.GORELEASER_KEY }}
           cosign_pwd: ${{ secrets.COSIGN_PWD }}
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
