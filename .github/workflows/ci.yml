@@ -63,11 +63,11 @@ jobs:
         run: |
           bash <(curl -s https://codecov.io/bash)
 
-
   setup-tests:
     runs-on: ubuntu-latest
     name: Setup tests
     steps:
+      - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.17'
@@ -87,6 +87,7 @@ jobs:
         name: ['reload', 'e2e', 'forwarded-header']
     needs:
       - sdk-generate
+      - setup-tests
     steps:
       - uses: ory/ci/checkout@master
       - uses: actions/setup-go@v2
