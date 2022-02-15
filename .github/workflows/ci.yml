@@ -115,9 +115,7 @@ jobs:
     if: ${{ github.ref_type == 'tag' || github.ref_name == 'master' }}
     needs:
       - test
-      - test-reload
-      - test-forwarded-header
-      - test-e2e
+      - validate
     steps:
       - uses: ory/ci/changelog@master
         with:
@@ -142,9 +140,7 @@ jobs:
     if: ${{ github.ref_type == 'tag' }}
     needs:
       - test
-      - test-reload
-      - test-forwarded-header
-      - test-e2e
+      - validate
       - changelog
     steps:
       - uses: ory/ci/releaser@master
