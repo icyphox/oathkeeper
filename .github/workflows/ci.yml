@@ -24,7 +24,7 @@ jobs:
           token: ${{ secrets.ORY_BOT_PAT }}
         id: sdk-generate
 
-  test:
+  validate:
     runs-on: ubuntu-latest
     name: Run tests and lints
     needs:
@@ -63,35 +63,40 @@ jobs:
         run: |
           bash <(curl -s https://codecov.io/bash)
 
-  test-reload:
-    runs-on: ubuntu-latest
-    # TODO: Better name?
-    name: Run tests (reload)
-    needs:
-      - sdk-generate
-    steps:
-      - uses: ory/ci/checkout@master
-      - run: ./test/reload/run.sh
 
-  test-forwarded-header:
+  setup-tests:
     runs-on: ubuntu-latest
-    # TODO: Better name?
-    name: Run tests (forwarded-header)
-    needs:
-      - sdk-generate
+    name: Setup tests
     steps:
-      - uses: ory/ci/checkout@master
-      - run: ./test/e2e/run.sh
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17'
+      - run: make install
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/bin/oathkeeper
+          key: oathkeeper-${{ hashFiles('~/go/bin/oathkeeper') }}
+          restore-keys: |
+            oathkeeper-
 
-  test-e2e:
+  test:
     runs-on: ubuntu-latest
-    # TODO: Better name?
-    name: Run tests (E2E)
+    name: Run tests
+    strategy:
+      matrix: 
+        name: ['reload', 'e2e', 'forwarded-header']
     needs:
       - sdk-generate
     steps:
       - uses: ory/ci/checkout@master
-      - run: ./test/forwarded-header/run.sh
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17'
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/bin/oathkeeper
+          key: oathkeeper-${{ hashFiles('~/go/bin/oathkeeper') }}
+      - run: ./test/${{ matrix.name }}/run.sh
 
   docs-cli:
     runs-on: ubuntu-latest
